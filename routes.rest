@@ -1,0 +1,155 @@
+GET http://localhost:5000
+
+### تسجيل مستخدم جديد
+POST http://localhost:5000/api/users/register
+Content-Type: application/json
+
+{
+  "name": "Ali",
+  "email": "ali@test.com",
+  "password": "123456"
+}
+
+### تسجيل الدخول
+POST http://localhost:5000/api/users/login
+Content-Type: application/json
+
+{
+  "email": "ali@test.com",
+  "password": "123456"
+}
+
+### إنشاء منتج جديد
+POST http://localhost:5000/api/products
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Laptop",
+  "description": "High performance laptop",
+  "price": 1200,
+  "stock": 10
+}
+
+### جلب جميع المنتجات
+GET http://localhost:5000/api/products
+Authorization: Bearer {{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YWYwNWMxZDNkYTVkY2MzZGQwMjUyOSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzAzMTY5LCJleHAiOjE3NzYzODk1Njl9.qBDCmQWuwLRlKyMbq5y9ah-rYYjliV0wkiASVMtQOuI"}}
+
+### إنشاء طلب
+POST http://localhost:5000/api/orders
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YWYwNWMxZDNkYTVkY2MzZGQwMjUyOSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzAzMTY5LCJleHAiOjE3NzYzODk1Njl9.qBDCmQWuwLRlKyMbq5y9ah-rYYjliV0wkiASVMtQOuI
+
+{
+  "products": [
+    {
+      "product": "69e03bff3b1f1cd40a452da4",
+      "quantity": 2
+    }
+  ]
+}
+
+###
+POST http://localhost:5000/api/users/login
+Content-Type: application/json
+
+{
+  "email": "admin@test.com",
+  "password": "123456"
+}
+### 3️⃣ اختبار صلاحيات Admin: جلب جميع الطلبات
+GET http://localhost:5000/api/orders
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZTA1NGYxZTIyZTFjMDdmZTI5NDZlZSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc3NjMwOTg2NSwiZXhwIjoxNzc2Mzk2MjY1fQ.gITmXPuo-ezGXXF9zDPl85G5AeR3kKkt0OOOgT-eFd8
+
+### 1️⃣ تسجيل مستخدم عادي
+POST http://localhost:5000/api/users/register
+Content-Type: application/json
+
+{
+  "name": "Ali2",
+  "email": "ali2@test.com",
+  "password": "123456"
+}
+
+### 2️⃣ تسجيل الدخول للمستخدم العادي
+POST http://localhost:5000/api/users/login
+Content-Type: application/json
+
+{
+  "email": "ali@test.com",
+  "password": "123456"
+}
+
+# انسخ token من الرد واستخدمه في الخطوات التالية
+# @token = {{response.body.token}}
+
+### 3️⃣ إنشاء Admin عبر seed script
+# شغل seedAdmin.js مرة واحدة قبل استخدام login
+# لا حاجة لطلب HTTP هنا لأن Admin يتم إنشاؤه من السكريبت
+
+### 4️⃣ تسجيل الدخول Admin
+POST http://localhost:5000/api/users/login
+Content-Type: application/json
+
+{
+  "email": "admin@test.com",
+  "password": "123456"
+}
+
+# انسخ token Admin من الرد
+# @adminToken = {{response.body.token}}
+
+### 5️⃣ إنشاء منتج جديد (Admin فقط)
+POST http://localhost:5000/api/products
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZTA1NGYxZTIyZTFjMDdmZTI5NDZlZSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc3NjMxMjQxMiwiZXhwIjoxNzc2Mzk4ODEyfQ.XiSJIHDzneiqo80OEjIzS4K4_HUS4THKYjJWwLi3EIU
+
+{
+  "name": "Laptop",
+  "description": "High performance laptop",
+  "price": 1200,
+  "stock": 10
+}
+
+# انسخ _id المنتج لاستخدامه في الطلبات
+# @productId = {{response.body._id}}
+
+### 6️⃣ جلب جميع المنتجات
+GET http://localhost:5000/api/products
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZTA1NGYxZTIyZTFjMDdmZTI5NDZlZSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc3NjMxMjQxMiwiZXhwIjoxNzc2Mzk4ODEyfQ.XiSJIHDzneiqo80OEjIzS4K4_HUS4THKYjJWwLi3EIU
+
+### 7️⃣ إنشاء طلب بواسطة مستخدم عادي
+POST http://localhost:5000/api/orders
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "products": [
+    {
+      "product": "{{productId}}",
+      "quantity": 2
+    }
+  ]
+}
+
+### 8️⃣ جلب جميع الطلبات (Admin فقط)
+GET http://localhost:5000/api/orders
+Authorization: Bearer {{adminToken}}
+
+### 9️⃣ اختبار Validation: إنشاء منتج بدون name
+POST http://localhost:5000/api/products
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZTA1NGYxZTIyZTFjMDdmZTI5NDZlZSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc3NjMxMjQxMiwiZXhwIjoxNzc2Mzk4ODEyfQ.XiSJIHDzneiqo80OEjIzS4K4_HUS4THKYjJWwLi3EIU
+
+{
+  "price": 100,
+  "stock": 5
+}
+
+### 10️⃣ اختبار Validation: إنشاء طلب بدون products
+POST http://localhost:5000/api/orders
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZTA1NGYxZTIyZTFjMDdmZTI5NDZlZSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc3NjMxMjQxMiwiZXhwIjoxNzc2Mzk4ODEyfQ.XiSJIHDzneiqo80OEjIzS4K4_HUS4THKYjJWwLi3EIU
+
+{
+}
